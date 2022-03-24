@@ -26,7 +26,7 @@ jobs:
         if: success()
         run: >
           mvn -B verify -DskipTests sonar:sonar
-          -Dsonar.projectKey=es.awkidev.corp:biblio-core
+          -Dsonar.projectKey=crismartin_biblio-core
           -Dsonar.organization=crismartin
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.login=$SONAR_TOKEN
