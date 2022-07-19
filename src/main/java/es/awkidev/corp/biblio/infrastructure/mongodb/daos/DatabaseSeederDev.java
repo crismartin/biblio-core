@@ -1,19 +1,36 @@
 package es.awkidev.corp.biblio.infrastructure.mongodb.daos;
 
+import es.awkidev.corp.biblio.infrastructure.mongodb.daos.synchronous.*;
+import es.awkidev.corp.biblio.infrastructure.mongodb.entities.*;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Service // @Profile("dev")
 public class DatabaseSeederDev {
-    // private RepoDao repoDao;
+
+    private AuthorDao authorDao;
+    private PublisherDao publisherDao;
+    private CategoryDao categoryDao;
+    private CustomerDao customerDao;
+    private BookDao bookDao;
 
     private DatabaseStarting databaseStarting;
 
     @Autowired
-    public DatabaseSeederDev() {
-        // this.repoDao = repoDao;
-        //this.deleteAllAndInitializeAndSeedDataBase();
+    public DatabaseSeederDev(DatabaseStarting databaseStarting, AuthorDao authorDao,
+                             PublisherDao publisherDao, CategoryDao categoryDao,
+                             CustomerDao customerDao, BookDao bookDao) {
+        this.databaseStarting = databaseStarting;
+        this.authorDao = authorDao;
+        this.publisherDao = publisherDao;
+        this.categoryDao = categoryDao;
+        this.customerDao = customerDao;
+        this.bookDao = bookDao;
+        this.deleteAllAndInitializeAndSeedDataBase();
     }
 
     public void deleteAllAndInitializeAndSeedDataBase() {
@@ -22,17 +39,54 @@ public class DatabaseSeederDev {
     }
 
     private void deleteAllAndInitialize() {
-        LogManager.getLogger(this.getClass()).warn("------- Delete All -------");
+        LogManager.getLogger(this.getClass()).warn("------- Deleted All - BEGIN -------");
+        authorDao.deleteAll();
+        LogManager.getLogger(this.getClass()).warn("------- Deleted All - END -------");
         this.databaseStarting.initialize();
     }
 
     private void seedDataBaseJava() {
-        LogManager.getLogger(this.getClass()).warn("------- Initial Load from JAVA --------");
-        /*
-        Entity[] entities = {};
-        this.repoDao.saveAll(List.of(entities));
-        LogManager.getLogger(this.getClass()).warn("        ------- entities");
-        */
-    }
+        LogManager.getLogger(this.getClass()).warn("------- Initial Load from JAVA - BEGIN --------");
+        LogManager.getLogger(this.getClass()).warn("        ------- Authors");
 
+        AuthorEntity[] authors = {
+                AuthorEntity.builder().fullName("Cliente Prueba").build(),
+                AuthorEntity.builder().fullName("Cliente II Prueba II").build()
+        };
+        authorDao.saveAll(List.of(authors));
+
+        LogManager.getLogger(this.getClass()).warn("        ------- Publishers");
+        PublisherEntity[] publishers = {
+                PublisherEntity.builder().name("Editorial de Prueba I").build(),
+                PublisherEntity.builder().name("Editorial de Prueba II").build(),
+        };
+        publisherDao.saveAll(List.of(publishers));
+
+        LogManager.getLogger(this.getClass()).warn("        ------- Categories");
+        CategoryEntity[] categories = {
+                CategoryEntity.builder().name("Categoria I").build(),
+                CategoryEntity.builder().name("Categoria II").build(),
+                CategoryEntity.builder().name("Categoria III").build()
+        };
+        categoryDao.saveAll(List.of(categories));
+
+        LogManager.getLogger(this.getClass()).warn("        ------- Customers");
+        CustomerEntity[] customers = {
+                CustomerEntity.builder().identity("77219088S").name("Pepe").surname("Perez")
+                        .secondSurname("Sanchez").nick("peperez").numberMembership("1").build()
+        };
+        customerDao.saveAll(List.of(customers));
+
+        LogManager.getLogger(this.getClass()).warn("        ------- Books");
+        BookEntity[] books = {
+                BookEntity.builder().isbn("9788425223280").title("LIBRO DE PRUEBA")
+                        .numberOfCopies(5).releaseDate(LocalDate.now())
+                        .summary("Ejemplo de resumen del libro").authors(List.of(authors))
+                        .categories(List.of(categories)).publisher(publishers[0])
+                        .build()
+        };
+        bookDao.saveAll(List.of(books));
+
+        LogManager.getLogger(this.getClass()).warn("------- Initial Load from JAVA - END --------");
+    }
 }
