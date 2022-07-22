@@ -27,17 +27,4 @@ class CustomerResourceIT {
                 .expectStatus()
                 .isOk();
     }
-
-    @Test
-    void testSearchByReferenceKO(){
-        this.restClientTestService.loginAdmin(webTestClient)
-                .get()
-                .uri(CUSTOMERS + NUMBER_MEMBERSHIP, "00000")
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody(List.class)
-                .value(List::isEmpty);
-    }
-
 }
