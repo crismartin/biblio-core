@@ -41,6 +41,11 @@ public class DatabaseSeederDev {
     private void deleteAllAndInitialize() {
         LogManager.getLogger(this.getClass()).warn("------- Deleted All - BEGIN -------");
         authorDao.deleteAll();
+        publisherDao.deleteAll();
+        categoryDao.deleteAll();
+        customerDao.deleteAll();
+        bookDao.deleteAll();
+
         LogManager.getLogger(this.getClass()).warn("------- Deleted All - END -------");
         this.databaseStarting.initialize();
     }
@@ -73,7 +78,11 @@ public class DatabaseSeederDev {
         LogManager.getLogger(this.getClass()).warn("        ------- Customers");
         CustomerEntity[] customers = {
                 CustomerEntity.builder().identity("77219088S").name("Pepe").surname("Perez")
-                        .secondSurname("Sanchez").nick("peperez").numberMembership("1").build()
+                        .secondSurname("Sanchez").nick("peperez").numberMembership("11111").build(),
+                CustomerEntity.builder().identity("02735900G").name("Jose").surname("Suarez")
+                        .secondSurname("Juarez").nick("josurez").numberMembership("22222").build(),
+                CustomerEntity.builder().identity("41830740L").name("Raul").surname("Lopez")
+                        .secondSurname("Mopez").nick("raulez").numberMembership("33333").build()
         };
         customerDao.saveAll(List.of(customers));
 
