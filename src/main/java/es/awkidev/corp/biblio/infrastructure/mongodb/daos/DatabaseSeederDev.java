@@ -82,11 +82,11 @@ public class DatabaseSeederDev {
 
         LogManager.getLogger(this.getClass()).warn("        ------- Customers");
         CustomerEntity[] customers = {
-                CustomerEntity.builder().identity("77219088S").name("Pepe").surname("Perez")
+                CustomerEntity.builder().id("1").identity("77219088S").name("Pepe").surname("Perez")
                         .secondSurname("Sanchez").nick("peperez").numberMembership("11111").build(),
-                CustomerEntity.builder().identity("02735900G").name("Jose").surname("Suarez")
+                CustomerEntity.builder().id("2").identity("02735900G").name("Jose").surname("Suarez")
                         .secondSurname("Juarez").nick("josurez").numberMembership("22222").build(),
-                CustomerEntity.builder().identity("41830740L").name("Raul").surname("Lopez")
+                CustomerEntity.builder().id("3").identity("41830740L").name("Raul").surname("Lopez")
                         .secondSurname("Mopez").nick("raulez").numberMembership("33333").build()
         };
         customerDao.saveAll(List.of(customers));
@@ -95,17 +95,17 @@ public class DatabaseSeederDev {
         BookEntity[] books = {
                 BookEntity.builder().isbn("9788425223280").title("LIBRO DE PRUEBA 1")
                         .numberOfCopies(5).releaseDate(LocalDate.now())
-                        .summary("Ejemplo de resumen del libro").authors(List.of(authors))
+                        .summary("Ejemplo de resumen del libro 1").authors(List.of(authors))
                         .categories(List.of(categories)).publisher(publishers[0])
                         .build(),
                 BookEntity.builder().isbn("9788457089895").title("LIBRO DE PRUEBA 2")
                         .numberOfCopies(3).releaseDate(LocalDate.now())
-                        .summary("Ejemplo de resumen del libro").authors(List.of(authors))
+                        .summary("Ejemplo de resumen del libro 2").authors(List.of(authors))
                         .categories(List.of(categories)).publisher(publishers[0])
                         .build(),
                 BookEntity.builder().isbn("9788457089870").title("LIBRO DE PRUEBA 3")
                         .numberOfCopies(3).releaseDate(LocalDate.now())
-                        .summary("Ejemplo de resumen del libro").authors(List.of(authors))
+                        .summary("Ejemplo de resumen del libro 3").authors(List.of(authors))
                         .categories(List.of(categories)).publisher(publishers[0])
                         .build()
         };
@@ -115,7 +115,7 @@ public class DatabaseSeederDev {
         LoanBookEntity[] loans = {
           LoanBookEntity.builder()
                   .book(books[0])
-                  .customer(customers[0])
+                  .customer(customers[2])
                   .endDate(LocalDate.now())
                   .build()
         };

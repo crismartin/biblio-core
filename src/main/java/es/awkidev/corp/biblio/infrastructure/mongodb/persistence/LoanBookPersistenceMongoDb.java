@@ -1,5 +1,6 @@
 package es.awkidev.corp.biblio.infrastructure.mongodb.persistence;
 
+import es.awkidev.corp.biblio.domain.exceptions.ConflictException;
 import es.awkidev.corp.biblio.domain.exceptions.NotFoundException;
 import es.awkidev.corp.biblio.domain.model.Book;
 import es.awkidev.corp.biblio.domain.model.LoanBook;
@@ -11,6 +12,7 @@ import es.awkidev.corp.biblio.infrastructure.mongodb.entities.BookEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.CustomerEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.LoanBookEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -64,7 +66,24 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
 
     private Mono<CustomerEntity> findCustomerRegistered(String numberMembership){
         return customerReactive.findCustomerEntityByNumberMembership(numberMembership)
-                .switchIfEmpty(Mono.error(new NotFoundException("Customer numberMembership: " + numberMembership)));
+                .switchIfEmpty(Mono.error(new NotFoundException("Customer numberMembership: " + numberMembership)))
+                .flatMap(customer -> assertHasManyLoansThanLimit(customer)
+                        .map(unused -> customer)
+                );
+    }
+
+    private Mono<Void> assertHasManyLoansThanLimit(CustomerEntity customer){
+        //FIXME OJO A ESTA RESTRICCION, YA QUE HABRIA QUE TENER EN CUENTA PRESTAMOS SIN ENTREGAR Y A ENTREGAR
+        return loanBookReactive.findAllByCustomerAndReturnedFalse(customer)
+                .collectList()
+                .map(loanBookEntities -> loanBookEntities.size() == LoanBook.MAX_NUM_LOANS)
+                .flatMap(hasManyLoansThanLimit -> BooleanUtils.isTrue(hasManyLoansThanLimit)
+                        ? Mono.error(
+                                new ConflictException("Customer has reached loan books limit. NumberMembership : "
+                                        + customer.getNumberMembership())
+                        )
+                        : Mono.empty()
+                );
     }
 
 }

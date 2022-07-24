@@ -22,10 +22,11 @@ public class LoanBookEntity {
     @Indexed(unique = true)
     private String id;
     private LocalDate endDate;
+    private boolean returned;
 
-    @DBRef
+    @DBRef(lazy = true)
     private BookEntity book;
-    @DBRef
+    @DBRef(lazy = true)
     private CustomerEntity customer;
 
 }

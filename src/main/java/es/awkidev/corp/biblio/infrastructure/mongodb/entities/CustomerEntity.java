@@ -18,7 +18,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class CustomerEntity {
 
     @Id
-    @Indexed(unique = true)
     private String id;
     private String name;
     private String surname;

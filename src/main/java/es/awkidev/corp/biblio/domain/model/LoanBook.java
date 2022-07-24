@@ -18,8 +18,10 @@ public class LoanBook {
     private Customer customer;
     private List<Book> books;
     private LocalDate endDate;
+    private boolean returned;
 
     private static final int NUM_LOAN_DAYS = 15;
+    public static final int MAX_NUM_LOANS = 5;
 
     public String getNumberMembership(){
         return customer != null ? customer.getNumberMembership() : StringUtils.EMPTY;

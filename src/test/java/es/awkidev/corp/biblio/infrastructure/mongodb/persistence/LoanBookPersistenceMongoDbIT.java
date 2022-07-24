@@ -20,18 +20,9 @@ class LoanBookPersistenceMongoDbIT {
 
     @Test
     void testCreate(){
-        List<Book> books = List.of(
-                Book.builder().isbn("9788457089895").build()
-        );
-
-        Customer customer = Customer.builder()
-                .numberMembership("11111")
-                .build();
-
-        LoanBook loanBook = LoanBook.builder()
-                .books(books)
-                .customer(customer)
-                .build();
+        var book = Book.builder().isbn("9788457089895").build();
+        var customer = Customer.builder().numberMembership("11111").build();
+        var loanBook = LoanBook.builder().books(List.of(book)).customer(customer).build();
 
         StepVerifier
                 .create(this.loanBookPersistenceMongoDb.create(loanBook))
@@ -40,6 +31,18 @@ class LoanBookPersistenceMongoDbIT {
                     return true;
                 })
                 .expectComplete()
+                .verify();
+    }
+
+    //@Test -> Probar con MAX_LIMIT_LOANS = 1
+    void testCreateKOForCustomerManyLoansThanLimit(){
+        var book = Book.builder().isbn("9788457089895").build();
+        var customer = Customer.builder().numberMembership("33333").build();
+        var loanBook = LoanBook.builder().books(List.of(book)).customer(customer).build();
+
+        StepVerifier
+                .create(this.loanBookPersistenceMongoDb.create(loanBook))
+                .expectError()
                 .verify();
     }
 }
