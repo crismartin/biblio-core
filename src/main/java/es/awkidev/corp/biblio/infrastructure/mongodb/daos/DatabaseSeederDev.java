@@ -17,19 +17,22 @@ public class DatabaseSeederDev {
     private CategoryDao categoryDao;
     private CustomerDao customerDao;
     private BookDao bookDao;
+    private LoanBookDao loanBookDao;
 
     private DatabaseStarting databaseStarting;
 
     @Autowired
     public DatabaseSeederDev(DatabaseStarting databaseStarting, AuthorDao authorDao,
                              PublisherDao publisherDao, CategoryDao categoryDao,
-                             CustomerDao customerDao, BookDao bookDao) {
+                             CustomerDao customerDao, BookDao bookDao,
+                             LoanBookDao loanBookDao) {
         this.databaseStarting = databaseStarting;
         this.authorDao = authorDao;
         this.publisherDao = publisherDao;
         this.categoryDao = categoryDao;
         this.customerDao = customerDao;
         this.bookDao = bookDao;
+        this.loanBookDao = loanBookDao;
         this.deleteAllAndInitializeAndSeedDataBase();
     }
 
@@ -40,11 +43,13 @@ public class DatabaseSeederDev {
 
     private void deleteAllAndInitialize() {
         LogManager.getLogger(this.getClass()).warn("------- Deleted All - BEGIN -------");
+
         authorDao.deleteAll();
         publisherDao.deleteAll();
         categoryDao.deleteAll();
         customerDao.deleteAll();
         bookDao.deleteAll();
+        loanBookDao.deleteAll();
 
         LogManager.getLogger(this.getClass()).warn("------- Deleted All - END -------");
         this.databaseStarting.initialize();
@@ -88,13 +93,33 @@ public class DatabaseSeederDev {
 
         LogManager.getLogger(this.getClass()).warn("        ------- Books");
         BookEntity[] books = {
-                BookEntity.builder().isbn("9788425223280").title("LIBRO DE PRUEBA")
+                BookEntity.builder().isbn("9788425223280").title("LIBRO DE PRUEBA 1")
                         .numberOfCopies(5).releaseDate(LocalDate.now())
+                        .summary("Ejemplo de resumen del libro").authors(List.of(authors))
+                        .categories(List.of(categories)).publisher(publishers[0])
+                        .build(),
+                BookEntity.builder().isbn("9788457089895").title("LIBRO DE PRUEBA 2")
+                        .numberOfCopies(3).releaseDate(LocalDate.now())
+                        .summary("Ejemplo de resumen del libro").authors(List.of(authors))
+                        .categories(List.of(categories)).publisher(publishers[0])
+                        .build(),
+                BookEntity.builder().isbn("9788457089870").title("LIBRO DE PRUEBA 3")
+                        .numberOfCopies(3).releaseDate(LocalDate.now())
                         .summary("Ejemplo de resumen del libro").authors(List.of(authors))
                         .categories(List.of(categories)).publisher(publishers[0])
                         .build()
         };
         bookDao.saveAll(List.of(books));
+
+        LogManager.getLogger(this.getClass()).warn("        ------- Loans");
+        LoanBookEntity[] loans = {
+          LoanBookEntity.builder()
+                  .book(books[0])
+                  .customer(customers[0])
+                  .endDate(LocalDate.now())
+                  .build()
+        };
+        loanBookDao.saveAll(List.of(loans));
 
         LogManager.getLogger(this.getClass()).warn("------- Initial Load from JAVA - END --------");
     }

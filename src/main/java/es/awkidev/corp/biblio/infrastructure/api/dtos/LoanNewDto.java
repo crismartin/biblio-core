@@ -13,6 +13,6 @@ import java.util.List;
 @Builder
 public class LoanNewDto {
 
-    private String idCustomer;
+    private String numberMembership;
     private List<String> idsBooks;
 }
