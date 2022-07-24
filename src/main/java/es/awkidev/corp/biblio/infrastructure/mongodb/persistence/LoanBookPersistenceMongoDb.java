@@ -3,8 +3,6 @@ package es.awkidev.corp.biblio.infrastructure.mongodb.persistence;
 import es.awkidev.corp.biblio.domain.exceptions.NotFoundException;
 import es.awkidev.corp.biblio.domain.model.Book;
 import es.awkidev.corp.biblio.domain.model.LoanBook;
-import es.awkidev.corp.biblio.domain.persistence.BookPersistence;
-import es.awkidev.corp.biblio.domain.persistence.CustomerPersistence;
 import es.awkidev.corp.biblio.domain.persistence.LoanBookPersistence;
 import es.awkidev.corp.biblio.infrastructure.mongodb.daos.BookReactive;
 import es.awkidev.corp.biblio.infrastructure.mongodb.daos.CustomerReactive;
@@ -38,29 +36,33 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
     public Mono<Void> create(LoanBook loanNew) {
         String numberMembership = loanNew.getNumberMembership();
         return Flux.fromStream(loanNew.getBooks().stream())
-                .flatMap(book -> findBookEntity(book))
-                .flatMap(loanBookEntity -> customerReactive.findCustomerEntityByNumberMembership(numberMembership)
-                        .switchIfEmpty(Mono.error(new NotFoundException("Customer numberMembership: " + numberMembership)))
-                        .map(customerEntity -> {
-                            loanBookEntity.setCustomer(customerEntity);
-                            loanBookEntity.setEndDate(LocalDate.now());
-                            loanBookReactive.save(loanBookEntity);
-                            return loanBookEntity;
-                        }))
-                .doOnNext(loanBookEntity -> this.bookReactive.save(loanBookEntity.getBook()))
+                .flatMap(this::findBookRegistered)
+                .flatMap(bookEntity -> findCustomerRegistered(numberMembership)
+                        .map(customerEntity -> LoanBookEntity.builder()
+                                .book(bookEntity)
+                                .customer(customerEntity)
+                                .endDate(LocalDate.now())
+                                .build()))
+                .doOnNext(loanBookEntity -> this.loanBookReactive.save(loanBookEntity))
                 .then(Mono.empty());
     }
 
-    private Mono<LoanBookEntity> findBookEntity(Book book){
+    private Mono<BookEntity> findBookRegistered(Book book){
         return bookReactive.findBookEntitiesByIsbn(book.getIsbn())
                 .switchIfEmpty(Mono.error(new NotFoundException("Book isbn: " + book.getIsbn())))
                 .filter(bookEntity -> bookEntity.getNumberOfCopies() > 0)
-                .map(bookEntity -> {
-                    bookEntity.setNumberOfCopies(bookEntity.getNumberOfCopies() - 1);
-                    LoanBookEntity loanBookEntity = new LoanBookEntity();
-                    loanBookEntity.setBook(bookEntity);
-                    return loanBookEntity;
-                });
+                .map(this::updateNumOfCopiesBook);
+    }
+
+    private BookEntity updateNumOfCopiesBook(BookEntity bookEntity){
+        bookEntity.setNumberOfCopies(bookEntity.getNumberOfCopies() - 1);
+        this.bookReactive.save(bookEntity);
+        return bookEntity;
+    }
+
+    private Mono<CustomerEntity> findCustomerRegistered(String numberMembership){
+        return customerReactive.findCustomerEntityByNumberMembership(numberMembership)
+                .switchIfEmpty(Mono.error(new NotFoundException("Customer numberMembership: " + numberMembership)));
     }
 
 }
