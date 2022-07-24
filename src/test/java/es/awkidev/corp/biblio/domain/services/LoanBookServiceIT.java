@@ -1,4 +1,4 @@
-package es.awkidev.corp.biblio.infrastructure.mongodb.persistence;
+package es.awkidev.corp.biblio.domain.services;
 
 import es.awkidev.corp.biblio.TestConfig;
 import es.awkidev.corp.biblio.domain.model.Book;
@@ -13,15 +13,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestConfig
-class LoanBookPersistenceMongoDbIT {
+class LoanBookServiceIT {
 
     @Autowired
-    LoanBookPersistenceMongoDb loanBookPersistenceMongoDb;
+    private LoanBookService loanBookService;
 
     @Test
     void testCreate(){
+
         List<Book> books = List.of(
-                Book.builder().isbn("9788457089895").build()
+                Book.builder().isbn("9788457089870").build()
         );
 
         Customer customer = Customer.builder()
@@ -34,12 +35,13 @@ class LoanBookPersistenceMongoDbIT {
                 .build();
 
         StepVerifier
-                .create(this.loanBookPersistenceMongoDb.create(loanBook))
+                .create(this.loanBookService.create(loanBook))
                 .expectNextMatches(result -> {
                     assertTrue(result);
                     return true;
                 })
-                .expectComplete()
+                .thenCancel()
                 .verify();
     }
+
 }

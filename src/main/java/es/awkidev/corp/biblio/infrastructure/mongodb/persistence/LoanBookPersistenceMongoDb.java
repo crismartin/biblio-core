@@ -10,14 +10,14 @@ import es.awkidev.corp.biblio.infrastructure.mongodb.daos.LoanBookReactive;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.BookEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.CustomerEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.LoanBookEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
-
 @Repository
+@Slf4j
 public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
 
     private CustomerReactive customerReactive;
@@ -33,7 +33,7 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
     }
 
     @Override
-    public Mono<Void> create(LoanBook loanNew) {
+    public Mono<Boolean> create(LoanBook loanNew) {
         String numberMembership = loanNew.getNumberMembership();
         return Flux.fromStream(loanNew.getBooks().stream())
                 .flatMap(this::findBookRegistered)
@@ -41,15 +41,16 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
                         .map(customerEntity -> LoanBookEntity.builder()
                                 .book(bookEntity)
                                 .customer(customerEntity)
-                                .endDate(LocalDate.now())
+                                .endDate(loanNew.getEndDate())
                                 .build()))
-                .doOnNext(loanBookEntity -> this.loanBookReactive.save(loanBookEntity))
-                .then(Mono.empty());
+                .flatMap(loanBookEntity -> this.loanBookReactive.save(loanBookEntity))
+                .then(Mono.just(Boolean.TRUE));
     }
 
     private Mono<BookEntity> findBookRegistered(Book book){
-        return bookReactive.findBookEntitiesByIsbn(book.getIsbn())
-                .switchIfEmpty(Mono.error(new NotFoundException("Book isbn: " + book.getIsbn())))
+        String isbn = book.getIsbn();
+        return bookReactive.findBookEntitiesByIsbn(isbn)
+                .switchIfEmpty(Mono.error(new NotFoundException("Book isbn: " + isbn)))
                 .filter(bookEntity -> bookEntity.getNumberOfCopies() > 0)
                 .map(this::updateNumOfCopiesBook);
     }
@@ -57,6 +58,7 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
     private BookEntity updateNumOfCopiesBook(BookEntity bookEntity){
         bookEntity.setNumberOfCopies(bookEntity.getNumberOfCopies() - 1);
         this.bookReactive.save(bookEntity);
+        log.info("Updated numOfCopies from book {}", bookEntity.getIsbn());
         return bookEntity;
     }
 

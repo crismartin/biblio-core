@@ -19,6 +19,8 @@ public class LoanBook {
     private List<Book> books;
     private LocalDate endDate;
 
+    private static final int NUM_LOAN_DAYS = 15;
+
     public String getNumberMembership(){
         return customer != null ? customer.getNumberMembership() : StringUtils.EMPTY;
     }
@@ -28,6 +30,10 @@ public class LoanBook {
             books = new ArrayList<>();
         }
         books.add(book);
+    }
+
+    public void initEndDate(){
+        setEndDate(LocalDate.now().plusDays(NUM_LOAN_DAYS));
     }
 
 }

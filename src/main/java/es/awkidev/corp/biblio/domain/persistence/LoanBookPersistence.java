@@ -7,5 +7,5 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface LoanBookPersistence {
 
-    Mono<Void> create(LoanBook loanNew);
+    Mono<Boolean> create(LoanBook loanNew);
 }

@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono;
 
 @Service
 public interface LoanBookService {
-    Mono<Void> create(LoanBook loanNew);
+    Mono<Boolean> create(LoanBook loanNew);
 }

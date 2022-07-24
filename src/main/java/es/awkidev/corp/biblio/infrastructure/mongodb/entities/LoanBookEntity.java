@@ -1,6 +1,5 @@
 package es.awkidev.corp.biblio.infrastructure.mongodb.entities;
 
-import es.awkidev.corp.biblio.domain.model.LoanBook;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,7 +28,4 @@ public class LoanBookEntity {
     @DBRef
     private CustomerEntity customer;
 
-    public LoanBookEntity(LoanBook loanBook){
-
-    }
 }

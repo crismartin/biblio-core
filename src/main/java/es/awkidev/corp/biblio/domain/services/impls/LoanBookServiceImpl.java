@@ -20,7 +20,8 @@ public class LoanBookServiceImpl implements LoanBookService {
     }
 
     @Override
-    public Mono<Void> create(LoanBook loanNew) {
+    public Mono<Boolean> create(LoanBook loanNew) {
+        loanNew.initEndDate();
         return loanBookPersistence.create(loanNew);
     }
 }
