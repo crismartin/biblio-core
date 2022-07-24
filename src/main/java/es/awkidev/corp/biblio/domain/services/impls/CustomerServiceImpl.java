@@ -23,7 +23,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Flux<String> searchByNumberMembership(String numberMembership) {
         return customerPersistence.searchByNumberMembership(numberMembership)
-                .map(Customer::getFullName);
+                .map(customer -> customer.getNumberMembership() + " - "
+                        + customer.getFullName()
+                );
     }
 
     @Override

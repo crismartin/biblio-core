@@ -32,6 +32,7 @@ public class CustomerResource {
 
     @GetMapping(NUMBER_MEMBERSHIP)
     public Mono<List<String>> searchByNumberMembership(@PathVariable String numberMembership) {
+        log.info("Search customer by numberMembership {}", numberMembership);
         return this.customerService.searchByNumberMembership(numberMembership)
                 .collectList();
     }
