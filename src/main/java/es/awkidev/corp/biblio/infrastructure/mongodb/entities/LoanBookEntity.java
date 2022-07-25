@@ -21,6 +21,7 @@ public class LoanBookEntity {
     @Id
     @Indexed(unique = true)
     private String id;
+    private LocalDate startDate;
     private LocalDate endDate;
     private boolean returned;
 

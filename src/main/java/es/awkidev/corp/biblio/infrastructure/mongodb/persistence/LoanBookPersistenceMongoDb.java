@@ -38,38 +38,35 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
     public Mono<Boolean> create(LoanBook loanNew) {
         String numberMembership = loanNew.getNumberMembership();
         return Flux.fromStream(loanNew.getBooks().stream())
-                .flatMap(this::findBookRegistered)
+                .flatMap(this::findBookRegisteredAndAvailable)
                 .flatMap(bookEntity -> findCustomerRegistered(numberMembership)
                         .map(customerEntity -> LoanBookEntity.builder()
                                 .book(bookEntity)
                                 .customer(customerEntity)
+                                .startDate(loanNew.getStartDate())
                                 .endDate(loanNew.getEndDate())
                                 .build()))
                 .flatMap(loanBookEntity -> this.loanBookReactive.save(loanBookEntity))
+                .flatMap(this::updateNumOfCopiesBook)
                 .then(Mono.just(Boolean.TRUE));
     }
 
-    private Mono<BookEntity> findBookRegistered(Book book){
+    private Mono<BookEntity> findBookRegisteredAndAvailable(Book book){
         String isbn = book.getIsbn();
-        return bookReactive.findBookEntitiesByIsbn(isbn)
+        return bookReactive.findBookEntityByIsbn(isbn)
                 .switchIfEmpty(Mono.error(new NotFoundException("Book isbn: " + isbn)))
                 .filter(bookEntity -> bookEntity.getNumberOfCopies() > 0)
-                .map(this::updateNumOfCopiesBook);
-    }
-
-    private BookEntity updateNumOfCopiesBook(BookEntity bookEntity){
-        bookEntity.setNumberOfCopies(bookEntity.getNumberOfCopies() - 1);
-        this.bookReactive.save(bookEntity);
-        log.info("Updated numOfCopies from book {}", bookEntity.getIsbn());
-        return bookEntity;
+                .switchIfEmpty(Mono.error(new ConflictException("Book not available: " + isbn)));
     }
 
     private Mono<CustomerEntity> findCustomerRegistered(String numberMembership){
         return customerReactive.findCustomerEntityByNumberMembership(numberMembership)
-                .switchIfEmpty(Mono.error(new NotFoundException("Customer numberMembership: " + numberMembership)))
-                .flatMap(customer -> assertHasManyLoansThanLimit(customer)
-                        .map(unused -> customer)
+                .switchIfEmpty(Mono.error(
+                        new NotFoundException("Customer numberMembership: " + numberMembership))
                 );
+                /*.flatMap(customer -> assertHasManyLoansThanLimit(customer)
+                        .map(unused -> customer)
+                );*/
     }
 
     private Mono<Void> assertHasManyLoansThanLimit(CustomerEntity customer){
@@ -86,4 +83,10 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
                 );
     }
 
+    private Mono<BookEntity> updateNumOfCopiesBook(LoanBookEntity loanBookEntity) {
+        BookEntity bookEntity = loanBookEntity.getBook();
+        bookEntity.setNumberOfCopies(bookEntity.getNumberOfCopies() - 1);
+        log.info("Updated numOfCopies from book {}", bookEntity.getIsbn());
+        return bookReactive.save(bookEntity);
+    }
 }

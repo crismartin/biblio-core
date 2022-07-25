@@ -1,5 +1,7 @@
 package es.awkidev.corp.biblio.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import es.awkidev.corp.biblio.domain.model.validations.ListNotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +16,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoanBook {
+
     private Customer customer;
     private List<Book> books;
+    private LocalDate startDate;
     private LocalDate endDate;
     private boolean returned;
 
@@ -34,8 +39,10 @@ public class LoanBook {
         books.add(book);
     }
 
-    public void initEndDate(){
-        setEndDate(LocalDate.now().plusDays(NUM_LOAN_DAYS));
+    public void initDates(){
+        LocalDate dateNow = LocalDate.now();
+        setStartDate(dateNow);
+        setEndDate(dateNow.plusDays(NUM_LOAN_DAYS));
     }
 
 }

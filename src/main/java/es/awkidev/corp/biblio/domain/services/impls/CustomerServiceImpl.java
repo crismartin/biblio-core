@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -21,15 +20,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Flux<String> searchByNumberMembership(String numberMembership) {
-        return customerPersistence.searchByNumberMembership(numberMembership)
-                .map(customer -> customer.getNumberMembership() + " - "
-                        + customer.getFullName()
-                );
-    }
-
-    @Override
-    public Mono<Customer> findByNumberMembership(String numberMembership) {
-        return customerPersistence.findByNumberMembership(numberMembership);
+    public Flux<Customer> searchByNumberMembership(String numberMembership) {
+        return customerPersistence.searchByNumberMembership(numberMembership);
     }
 }

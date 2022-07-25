@@ -21,8 +21,9 @@ class CustomerServiceIT {
     void testSearchByNumberMembershipOk(){
         StepVerifier
                 .create(this.customerService.searchByNumberMembership(NUMBER_MEMBERSHIP_OK))
-                .expectNextMatches(customerFullName -> {
-                    assertNotNull(customerFullName, FULL_NAME);
+                .expectNextMatches(customer -> {
+                    assertNotNull(customer);
+                    assertEquals(FULL_NAME, customer.getFullName());
                     return true;
                 })
                 .thenCancel()

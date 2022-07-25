@@ -5,5 +5,5 @@ import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import reactor.core.publisher.Mono;
 
 public interface BookReactive extends ReactiveSortingRepository<BookEntity, String> {
-    Mono<BookEntity> findBookEntitiesByIsbn(String isbn);
+    Mono<BookEntity> findBookEntityByIsbn(String isbn);
 }

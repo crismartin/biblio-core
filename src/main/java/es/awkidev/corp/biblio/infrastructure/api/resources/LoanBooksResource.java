@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 //@PreAuthorize("hasRole('ADMIN')")
@@ -24,8 +26,9 @@ public class LoanBooksResource {
     }
 
     @PostMapping(produces = {"application/json"})
-    public Mono<Boolean> createLoan(@RequestBody LoanNewDto loanNewDto) {
+    public Mono<Boolean> createLoan(@RequestBody @Valid LoanNewDto loanNewDto) {
         log.info("New loan incoming: {}", loanNewDto);
+
         return loanBookService.create(loanNewDto.toLoanBook());
     }
 }

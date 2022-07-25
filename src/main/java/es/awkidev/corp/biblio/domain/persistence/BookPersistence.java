@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface BookPersistence {
-    Mono<Book> findByIsbn(String isbn);
+    Mono<Book> searchByIsbn(String isbn);
 }

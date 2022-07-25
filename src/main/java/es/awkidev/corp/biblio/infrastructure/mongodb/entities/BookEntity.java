@@ -1,10 +1,12 @@
 package es.awkidev.corp.biblio.infrastructure.mongodb.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import es.awkidev.corp.biblio.domain.model.Book;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -31,10 +33,16 @@ public class BookEntity {
     private String summary;
     private int numberOfCopies;
 
-    @DBRef
+    @DBRef(lazy = true)
     private List<AuthorEntity> authors;
-    @DBRef
+    @DBRef(lazy = true)
     private PublisherEntity publisher;
-    @DBRef
+    @DBRef(lazy = true)
     private List<CategoryEntity> categories;
+
+    public Book toBook(){
+        Book book = new Book();
+        BeanUtils.copyProperties(this, book);
+        return book;
+    }
 }

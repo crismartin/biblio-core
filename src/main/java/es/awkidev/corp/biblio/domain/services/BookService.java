@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono;
 
 @Service
 public interface BookService {
-    Mono<Book> findByIsbn(String isbn);
+    Mono<Book> searchByIsbn(String isbn);
 }

@@ -28,7 +28,7 @@ public class CustomerEntity {
     @Indexed(unique = true)
     private String numberMembership;
 
-    public Customer mapToCustomer(){
+    public Customer toCustomer(){
         Customer customer = new Customer();
         BeanUtils.copyProperties(this, customer);
         return customer;

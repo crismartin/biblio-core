@@ -104,7 +104,7 @@ public class DatabaseSeederDev {
                         .categories(List.of(categories)).publisher(publishers[0])
                         .build(),
                 BookEntity.builder().isbn("9788457089870").title("LIBRO DE PRUEBA 3")
-                        .numberOfCopies(3).releaseDate(LocalDate.now())
+                        .numberOfCopies(1).releaseDate(LocalDate.now())
                         .summary("Ejemplo de resumen del libro 3").authors(List.of(authors))
                         .categories(List.of(categories)).publisher(publishers[0])
                         .build()
@@ -116,7 +116,8 @@ public class DatabaseSeederDev {
           LoanBookEntity.builder()
                   .book(books[0])
                   .customer(customers[2])
-                  .endDate(LocalDate.now())
+                  .startDate(LocalDate.now())
+                  .endDate(LocalDate.now().plusDays(15))
                   .build()
         };
         loanBookDao.saveAll(List.of(loans));
