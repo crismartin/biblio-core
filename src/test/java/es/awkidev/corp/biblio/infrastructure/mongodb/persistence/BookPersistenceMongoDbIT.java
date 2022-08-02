@@ -15,8 +15,8 @@ class BookPersistenceMongoDbIT {
     private BookPersistenceMongoDb bookPersistenceMongoDb;
 
     @Test
-    void testFindByIsbnOk(){
-        String isbn = "9788425223280";
+    void testSearchByIsbnOk(){
+        String isbn = "9788497443869";
 
         StepVerifier
                 .create(this.bookPersistenceMongoDb.searchByIsbn(isbn))

@@ -6,5 +6,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 public interface LoanBookService {
-    Mono<Boolean> create(LoanBook loanNew);
+    Mono<LoanBook> create(LoanBook loanNew);
+
+    Mono<LoanBook> findByReference(String reference);
 }

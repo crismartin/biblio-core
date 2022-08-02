@@ -20,10 +20,10 @@ class LoanBookReactiveIT {
         CustomerEntity customerEntity = CustomerEntity.builder().id("3").build();
 
         StepVerifier
-                .create(this.loanBookReactive.findAllByCustomerAndReturnedFalse(customerEntity))
+                .create(loanBookReactive.findAllByCustomerEntityAndReturnedFalse(customerEntity))
                 .expectNextMatches(loanBookEntity -> {
                     assertNotNull(loanBookEntity);
-                    assertEquals(customerEntity.getId(), loanBookEntity.getCustomer().getId());
+                    assertEquals(customerEntity.getId(), loanBookEntity.getCustomerEntity().getId());
                     return true;
                 })
                 .thenCancel()

@@ -16,7 +16,7 @@ class BookReactiveIT {
 
     @Test
     void testFindBookEntityByIsbn(){
-        String isbn = "9788425223280";
+        String isbn = "9788497443869";
 
         StepVerifier
                 .create(this.bookReactive.findBookEntityByIsbn(isbn))

@@ -1,6 +1,7 @@
 package es.awkidev.corp.biblio.infrastructure.api.resources;
 
 import es.awkidev.corp.biblio.infrastructure.api.RestClientTestService;
+import es.awkidev.corp.biblio.infrastructure.api.dtos.LoanInfoDto;
 import es.awkidev.corp.biblio.infrastructure.api.dtos.LoanNewDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,8 +24,8 @@ class LoanBookResourceIT {
     @Test
     void testCreateOk() {
         LoanNewDto loanNewDto = LoanNewDto.builder()
-                .numberMembership("11111")
-                .books(List.of("9788457089870"))
+                .numberMembership("22222")
+                .books(List.of("ref-2"))
                 .build();
 
         this.restClientTestService.loginAdmin(webTestClient)
@@ -33,7 +34,13 @@ class LoanBookResourceIT {
                 .body(Mono.just(loanNewDto), LoanNewDto.class)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(Boolean.class)
-                .value(Assertions::assertTrue);
+                .expectBody(LoanInfoDto.class)
+                .value(Assertions::assertNotNull)
+                .value(this::expectedLoanInfoCreated);
+    }
+
+    private void expectedLoanInfoCreated(LoanInfoDto loanInfoDto) {
+        Assertions.assertNotNull(loanInfoDto.getReference());
+        Assertions.assertNotNull(loanInfoDto.getEndDate());
     }
 }

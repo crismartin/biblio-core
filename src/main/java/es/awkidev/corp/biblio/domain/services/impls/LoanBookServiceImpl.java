@@ -20,8 +20,13 @@ public class LoanBookServiceImpl implements LoanBookService {
     }
 
     @Override
-    public Mono<Boolean> create(LoanBook loanNew) {
-        loanNew.initDates();
+    public Mono<LoanBook> create(LoanBook loanNew) {
+        loanNew.initParameters();
         return loanBookPersistence.create(loanNew);
+    }
+
+    @Override
+    public Mono<LoanBook> findByReference(String reference) {
+        return loanBookPersistence.findByReference(reference);
     }
 }

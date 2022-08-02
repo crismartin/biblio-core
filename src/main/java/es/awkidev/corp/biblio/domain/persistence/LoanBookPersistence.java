@@ -7,5 +7,7 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface LoanBookPersistence {
 
-    Mono<Boolean> create(LoanBook loanNew);
+    Mono<LoanBook> create(LoanBook loanNew);
+
+    Mono<LoanBook> findByReference(String reference);
 }

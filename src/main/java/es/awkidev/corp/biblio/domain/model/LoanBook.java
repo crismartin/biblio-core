@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -19,28 +20,26 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoanBook {
 
+    private String reference;
     private Customer customer;
-    private List<Book> books;
+    private List<CopyBook> copyBooks;
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean returned;
 
-    private static final int NUM_LOAN_DAYS = 15;
-    public static final int MAX_NUM_LOANS = 5;
+    private static final int NUM_LOAN_DAYS = 30;
+    //TODO cambiar loan_days por mes, para que se devuelva el mismo dia
+    //TODO pero del mes siguiente
+    public static final int MAX_NUM_LOANS = 3;
 
     public String getNumberMembership(){
         return customer != null ? customer.getNumberMembership() : StringUtils.EMPTY;
     }
 
-    public void addBook(Book book){
-        if(books == null){
-            books = new ArrayList<>();
-        }
-        books.add(book);
-    }
-
-    public void initDates(){
+    public void initParameters(){
         LocalDate dateNow = LocalDate.now();
+
+        setReference(UUID.randomUUID().toString());
         setStartDate(dateNow);
         setEndDate(dateNow.plusDays(NUM_LOAN_DAYS));
     }

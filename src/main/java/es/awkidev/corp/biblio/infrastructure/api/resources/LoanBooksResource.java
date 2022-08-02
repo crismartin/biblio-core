@@ -1,6 +1,7 @@
 package es.awkidev.corp.biblio.infrastructure.api.resources;
 
 import es.awkidev.corp.biblio.domain.services.LoanBookService;
+import es.awkidev.corp.biblio.infrastructure.api.dtos.LoanInfoDto;
 import es.awkidev.corp.biblio.infrastructure.api.dtos.LoanNewDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import javax.validation.Valid;
 public class LoanBooksResource {
 
     public static final String LOAN_BOOKS = "/library/loans";
+    public static final String REFERENCE = "/{reference}";
 
     private LoanBookService loanBookService;
 
@@ -26,9 +28,17 @@ public class LoanBooksResource {
     }
 
     @PostMapping(produces = {"application/json"})
-    public Mono<Boolean> createLoan(@RequestBody @Valid LoanNewDto loanNewDto) {
+    public Mono<LoanInfoDto> createLoan(@RequestBody @Valid LoanNewDto loanNewDto) {
         log.info("New loan incoming: {}", loanNewDto);
 
-        return loanBookService.create(loanNewDto.toLoanBook());
+        return loanBookService.create(loanNewDto.toLoanBook())
+                .map(LoanInfoDto::new);
+    }
+
+    @GetMapping(REFERENCE)
+    public Mono<LoanInfoDto> findLoanByReference(@PathVariable String reference){
+        log.info("Find loan by reference: {}", reference);
+        return loanBookService.findByReference(reference)
+                .map(LoanInfoDto::new);
     }
 }

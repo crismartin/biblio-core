@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,15 +18,20 @@ import java.time.LocalDate;
 public class LoanBookEntity {
 
     @Id
-    @Indexed(unique = true)
     private String id;
+    private String reference;
     private LocalDate startDate;
     private LocalDate endDate;
-    private boolean returned;
+    private boolean returned; //FIXME Esto se deberia poder quitar, repetido de CopyBookEntity
 
+    @DBRef
+    private CopyBookEntity copyBookEntity;
     @DBRef(lazy = true)
-    private BookEntity book;
-    @DBRef(lazy = true)
-    private CustomerEntity customer;
+    private CustomerEntity customerEntity;
 
+    public String getNumberMembership(){
+        return customerEntity != null
+                ? customerEntity.getNumberMembership()
+                : null;
+    }
 }

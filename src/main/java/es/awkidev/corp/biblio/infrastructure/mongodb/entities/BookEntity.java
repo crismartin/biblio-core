@@ -31,7 +31,6 @@ public class BookEntity {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate releaseDate;
     private String summary;
-    private int numberOfCopies;
 
     @DBRef(lazy = true)
     private List<AuthorEntity> authors;
