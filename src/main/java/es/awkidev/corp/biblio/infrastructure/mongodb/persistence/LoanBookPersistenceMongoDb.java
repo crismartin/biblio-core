@@ -129,14 +129,16 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
                 .flatMap(loanBookEntity ->
                         customerReactive.findCustomerEntityByNumberMembership(loanBookEntity.getNumberMembership())
                         .map(customerEntity -> {
+                            log.warn("entro a customer set");
                             loanBook.setEndDate(loanBookEntity.getEndDate());
                             loanBook.setCustomer(customerEntity.toCustomer());
                             return loanBookEntity;
                         })
                 )
                 .flatMap(loanBookEntity ->
-                        copyBookReactive.findByReferenceAndAvailableTrue(loanBookEntity.getReference())
+                        copyBookReactive.findByReference(loanBookEntity.getCopyBookEntity().getReference())
                         .map(copyBookEntity -> {
+                            log.warn("entro a copybooks set");
                             loanBook.setCopyBooks(List.of(copyBookEntity.toCopyBook()));
                             return loanBook;
                         })

@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -18,4 +21,17 @@ public class CopyBook {
     private String location;
 
     private Book book;
+
+    public String getBookIsbn(){
+        return Optional.ofNullable(book)
+                .map(Book::getIsbn)
+                .orElse(StringUtils.EMPTY);
+
+    }
+
+    public String getBookTitle(){
+        return Optional.ofNullable(book)
+                .map(Book::getTitle)
+                .orElse(StringUtils.EMPTY);
+    }
 }
