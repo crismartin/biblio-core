@@ -12,13 +12,11 @@ import es.awkidev.corp.biblio.infrastructure.mongodb.entities.CopyBookEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.CustomerEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.LoanBookEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -129,7 +127,6 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
                 .flatMap(loanBookEntity ->
                         customerReactive.findCustomerEntityByNumberMembership(loanBookEntity.getNumberMembership())
                         .map(customerEntity -> {
-                            log.warn("entro a customer set");
                             loanBook.setEndDate(loanBookEntity.getEndDate());
                             loanBook.setCustomer(customerEntity.toCustomer());
                             return loanBookEntity;
@@ -138,7 +135,6 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
                 .flatMap(loanBookEntity ->
                         copyBookReactive.findByReference(loanBookEntity.getCopyBookEntity().getReference())
                         .map(copyBookEntity -> {
-                            log.warn("entro a copybooks set");
                             loanBook.setCopyBooks(List.of(copyBookEntity.toCopyBook()));
                             return loanBook;
                         })
