@@ -32,7 +32,7 @@ public class BookEntity {
     private LocalDate releaseDate;
     private String summary;
 
-    @DBRef(lazy = true)
+    @DBRef
     private List<AuthorEntity> authors;
     @DBRef(lazy = true)
     private PublisherEntity publisher;
@@ -42,6 +42,7 @@ public class BookEntity {
     public Book toBook(){
         Book book = new Book();
         BeanUtils.copyProperties(this, book);
+        book.setAuthors(AuthorEntity.toAuthors(authors));
         return book;
     }
 }

@@ -4,7 +4,6 @@ import es.awkidev.corp.biblio.domain.model.CopyBook;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
 
 @Data
 @AllArgsConstructor
@@ -20,11 +19,7 @@ public class CopyBookDto {
     private BookDto book;
 
     public CopyBookDto(CopyBook copyBook){
-        BookDto bookDto = new BookDto();
-
         this.reference = copyBook.getReference();
-
-        BeanUtils.copyProperties(copyBook.getBook(), bookDto);
-        this.book = bookDto;
+        this.book = new BookDto(copyBook.getBook());
     }
 }

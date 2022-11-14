@@ -43,8 +43,7 @@ public class CopyBookPersistenceMongoDb implements CopyBookPersistence {
                 .flatMap(copyBookEntity -> bookReactive.findById(copyBookEntity.getBookEntity().getId())
                         .map(bookEntity -> {
                             CopyBook copyBook = copyBookEntity.toCopyBook();
-                            Book book = bookEntity.toBook();
-                            copyBook.setBook(book);
+                            copyBook.setBook(bookEntity.toBook());
                             return copyBook;
                         })
                 );
