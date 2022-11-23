@@ -37,16 +37,16 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
         LoanBook loanBook = new LoanBook();
         log.info("Find loan by reference '{}'", reference);
 
-        return loanBookReactive.findFirstByReference(reference)
+        return loanBookReactive.findByReference(reference)
                 .switchIfEmpty(Mono.error(new NotFoundException("Loan reference: " + reference)))
                 .flatMap(loanBookEntity ->
                         customerReactive.findCustomerEntityByNumberMembership(loanBookEntity.getNumberMembership())
                         .map(customerEntity -> {
+                            loanBook.setReference(reference);
                             loanBook.setEndDate(loanBookEntity.getEndDate());
                             loanBook.setCustomer(customerEntity.toCustomer());
-                            return loanBookEntity;
+                            return loanBook;
                         })
-                )
-                .map(unused -> loanBook);
+                );
     }
 }

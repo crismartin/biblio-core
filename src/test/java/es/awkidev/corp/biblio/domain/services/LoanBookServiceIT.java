@@ -11,6 +11,7 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @TestConfig
@@ -44,6 +45,22 @@ class LoanBookServiceIT {
                     assertNotNull(result);
                     assertNotNull(result.getReference());
                     assertNotNull(result.getEndDate());
+                    return true;
+                })
+                .thenCancel()
+                .verify();
+    }
+
+    @Test
+    void testFindByReferenceOk(){
+        String loanReference = "loanRef-1";
+        StepVerifier
+                .create(this.loanBookService.findByReference(loanReference))
+                .expectNextMatches(result -> {
+                    assertNotNull(result);
+                    assertNotNull(result.getReference());
+                    assertEquals(loanReference, result.getReference());
+                    assertNotNull(result.getCustomer());
                     return true;
                 })
                 .thenCancel()

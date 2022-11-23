@@ -155,8 +155,9 @@ public class DatabaseSeederDev {
         LogManager.getLogger(this.getClass()).warn("        ------- Loans");
         LoanBookEntity[] loans = {
           LoanBookEntity.builder()
+                  .reference("loanRef-1")
                   .copyBookEntities(List.of(copyBooks[0]))
-                  .customerEntity(customers[2]).reference("1")
+                  .customerEntity(customers[2])
                   .returned(false)
                   .startDate(LocalDate.now()).endDate(LocalDate.now().plusMonths(1))
                   .build()
