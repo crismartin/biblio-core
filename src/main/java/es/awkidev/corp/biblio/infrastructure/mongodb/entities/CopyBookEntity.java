@@ -1,6 +1,6 @@
 package es.awkidev.corp.biblio.infrastructure.mongodb.entities;
 
-import es.awkidev.corp.biblio.domain.model.Customer;
+import es.awkidev.corp.biblio.domain.model.CopyBook;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -15,22 +16,23 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @AllArgsConstructor
 @Document
-public class CustomerEntity {
+public class CopyBookEntity {
 
     @Id
     private String id;
-    private String name;
-    private String surname;
-    private String secondSurname;
-    private String nick;
     @Indexed(unique = true)
-    private String identity;
-    @Indexed(unique = true)
-    private String numberMembership;
+    private String reference;
+    private String signature;
+    private boolean available;
+    private String section;
+    private String location;
 
-    public Customer toCustomer(){
-        Customer customer = new Customer();
-        BeanUtils.copyProperties(this, customer);
-        return customer;
+    @DBRef(lazy = true)
+    private BookEntity bookEntity;
+
+    public CopyBook toCopyBook() {
+        CopyBook copyBook = new CopyBook();
+        BeanUtils.copyProperties(this, copyBook);
+        return copyBook;
     }
 }
