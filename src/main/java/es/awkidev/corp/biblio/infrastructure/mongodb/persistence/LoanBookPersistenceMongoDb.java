@@ -37,7 +37,7 @@ public class LoanBookPersistenceMongoDb implements LoanBookPersistence {
         LoanBook loanBook = new LoanBook();
         log.info("Find loan by reference '{}'", reference);
 
-        return loanBookReactive.findByReference(reference)
+        return loanBookReactive.findFirstByReference(reference)
                 .switchIfEmpty(Mono.error(new NotFoundException("Loan reference: " + reference)))
                 .flatMap(loanBookEntity ->
                         customerReactive.findCustomerEntityByNumberMembership(loanBookEntity.getNumberMembership())

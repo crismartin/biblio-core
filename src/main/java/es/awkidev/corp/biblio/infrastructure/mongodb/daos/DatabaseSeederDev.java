@@ -138,7 +138,7 @@ public class DatabaseSeederDev {
                         .bookEntity(books[0])
                         .build(),
                 CopyBookEntity.builder()
-                        .id("6").reference("ref-6").available(true).location("DEPOSITO")
+                        .id("6").reference("ref-6").available(false).location("DEPOSITO")
                         .bookEntity(books[1])
                         .build(),
                 CopyBookEntity.builder()
@@ -153,14 +153,16 @@ public class DatabaseSeederDev {
         copyBookDao.saveAll(List.of(copyBooks));
 
         LogManager.getLogger(this.getClass()).warn("        ------- Loans");
+        var dateNow = LocalDate.now();
+        var endDate = dateNow.plusMonths(1);
         LoanBookEntity[] loans = {
-          LoanBookEntity.builder()
-                  .reference("loanRef-1")
-                  .copyBookEntities(List.of(copyBooks[0]))
-                  .customerEntity(customers[2])
-                  .returned(false)
-                  .startDate(LocalDate.now()).endDate(LocalDate.now().plusMonths(1))
-                  .build()
+                LoanBookEntity.builder()
+                        .reference("loanRef-1")
+                        .copyBookEntity(copyBooks[0])
+                        .customerEntity(customers[2])
+                        .startDate(dateNow)
+                        .endDate(endDate)
+                        .build()
         };
         loanBookDao.saveAll(List.of(loans));
 

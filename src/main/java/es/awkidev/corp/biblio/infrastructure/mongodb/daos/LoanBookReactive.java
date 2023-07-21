@@ -9,5 +9,8 @@ import reactor.core.publisher.Mono;
 public interface LoanBookReactive extends ReactiveSortingRepository<LoanBookEntity, String> {
 
     Flux<LoanBookEntity> findAllByCustomerEntityAndReturnedFalse(CustomerEntity customerEntity);
-    Mono<LoanBookEntity> findByReference(String reference);
+
+    Mono<Long> countAllByCustomerEntityAndReturnedFalse(CustomerEntity customerEntity);
+
+    Mono<LoanBookEntity> findFirstByReference(String reference);
 }

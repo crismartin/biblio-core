@@ -25,10 +25,10 @@ public class LoanBookEntity {
     private String reference;
     private LocalDate startDate;
     private LocalDate endDate;
-    private boolean returned; //FIXME Esto se deberia poder quitar, repetido de CopyBookEntity
+    private boolean returned;
 
     @DBRef
-    private List<CopyBookEntity> copyBookEntities;
+    private CopyBookEntity copyBookEntity;
     @DBRef(lazy = true)
     private CustomerEntity customerEntity;
 
@@ -36,12 +36,5 @@ public class LoanBookEntity {
         return customerEntity != null
                 ? customerEntity.getNumberMembership()
                 : null;
-    }
-
-    public LoanBook toLoanBook(){
-        LoanBook loanBook = new LoanBook();
-        BeanUtils.copyProperties(this, loanBook);
-        loanBook.setCustomer(this.getCustomerEntity().toCustomer());
-        return loanBook;
     }
 }

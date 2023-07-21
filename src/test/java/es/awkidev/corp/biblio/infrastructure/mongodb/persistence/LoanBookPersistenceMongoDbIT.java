@@ -24,7 +24,7 @@ class LoanBookPersistenceMongoDbIT {
         var book = Book.builder().isbn("9788497443869").build();
         var copyBook = CopyBook.builder().reference("ref-3").book(book).build();
         var customer = Customer.builder().numberMembership("33333").build();
-        var loanBook = LoanBook.builder().copyBooks(List.of(copyBook)).customer(customer).build();
+        var loanBook = LoanBook.builder().reference("loanbook-t-1").copyBooks(List.of(copyBook)).customer(customer).build();
 
         StepVerifier
                 .create(loanBookPersistenceMongoDb.create(loanBook))

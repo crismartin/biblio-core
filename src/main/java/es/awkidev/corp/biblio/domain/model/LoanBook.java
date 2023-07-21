@@ -1,7 +1,6 @@
 package es.awkidev.corp.biblio.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import es.awkidev.corp.biblio.domain.model.validations.ListNotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +30,7 @@ public class LoanBook {
     //TODO pero del mes siguiente
     public static final int MAX_NUM_LOANS = 3;
 
-    public String getNumberMembership(){
+    public String getCustomerNumberMembership(){
         return customer != null ? customer.getNumberMembership() : StringUtils.EMPTY;
     }
 
