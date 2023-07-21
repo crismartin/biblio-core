@@ -71,8 +71,8 @@ public class LoanCreationValidationMongoDb {
 
     private Mono<CustomerEntity> customerValidation(String customerNumberMembership) {
         return findCustomerRegistered(customerNumberMembership)
-                .flatMap(customer -> checkNoPendingLoansCustomer(customer))
-                .flatMap(customer -> checkMaxLoansCustomerEntity(customer));
+                .flatMap(this::checkNoPendingLoansCustomer)
+                .flatMap(this::checkMaxLoansCustomerEntity);
     }
 
     private Mono<CustomerEntity> findCustomerRegistered(String numberMembership){
