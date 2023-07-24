@@ -19,6 +19,7 @@ public class DatabaseSeederDev {
     private BookDao bookDao;
     private LoanBookDao loanBookDao;
     private CopyBookDao copyBookDao;
+    private PenalizationDao penalizationDao;
 
     private DatabaseStarting databaseStarting;
 
@@ -26,7 +27,8 @@ public class DatabaseSeederDev {
     public DatabaseSeederDev(DatabaseStarting databaseStarting, AuthorDao authorDao,
                              PublisherDao publisherDao, CategoryDao categoryDao,
                              CustomerDao customerDao, BookDao bookDao,
-                             LoanBookDao loanBookDao, CopyBookDao copyBookDao) {
+                             LoanBookDao loanBookDao, CopyBookDao copyBookDao,
+                             PenalizationDao penalizationDao) {
         this.databaseStarting = databaseStarting;
         this.authorDao = authorDao;
         this.publisherDao = publisherDao;
@@ -35,6 +37,7 @@ public class DatabaseSeederDev {
         this.bookDao = bookDao;
         this.loanBookDao = loanBookDao;
         this.copyBookDao = copyBookDao;
+        this.penalizationDao = penalizationDao;
         this.deleteAllAndInitializeAndSeedDataBase();
     }
 
@@ -52,6 +55,7 @@ public class DatabaseSeederDev {
         customerDao.deleteAll();
         copyBookDao.deleteAll();
         bookDao.deleteAll();
+        penalizationDao.deleteAll();
         loanBookDao.deleteAll();
 
         LogManager.getLogger(this.getClass()).warn("------- Deleted All - END -------");
@@ -146,7 +150,7 @@ public class DatabaseSeederDev {
                         .bookEntity(books[1])
                         .build(),
                 CopyBookEntity.builder()
-                        .id("8").reference("ref-8").available(true).location("DEPOSITO")
+                        .id("8").reference("ref-8").available(false).location("DEPOSITO")
                         .bookEntity(books[1])
                         .build()
         };
@@ -162,9 +166,36 @@ public class DatabaseSeederDev {
                         .customerEntity(customers[2])
                         .startDate(dateNow)
                         .endDate(endDate)
+                        .build(),
+                LoanBookEntity.builder()
+                        .reference("loanRef-1")
+                        .copyBookEntity(copyBooks[5])
+                        .customerEntity(customers[2])
+                        .startDate(dateNow)
+                        .endDate(endDate)
+                        .build(),
+                LoanBookEntity.builder()
+                        .reference("loanRef-2")
+                        .copyBookEntity(copyBooks[7])
+                        .customerEntity(customers[3])
+                        .startDate(dateNow.plusMonths(-1))
+                        .endDate(dateNow.plusDays(-1))
                         .build()
         };
         loanBookDao.saveAll(List.of(loans));
+
+        LogManager.getLogger(this.getClass()).warn("        ------- Penalizations");
+        PenalizationEntity[] penalizations = {
+                PenalizationEntity.builder()
+                        .reference("penalization-1")
+                        .active(true)
+                        .loanBookEntities(List.of(loans[2]))
+                        .customerEntity(customers[3])
+                        .startDate(dateNow)
+                        .endDate(null)
+                        .build()
+        };
+        penalizationDao.saveAll(List.of(penalizations));
 
         LogManager.getLogger(this.getClass()).warn("------- Initial Load from JAVA - END --------");
     }

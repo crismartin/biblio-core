@@ -7,6 +7,7 @@ import es.awkidev.corp.biblio.domain.model.LoanBook;
 import es.awkidev.corp.biblio.infrastructure.mongodb.daos.CopyBookReactive;
 import es.awkidev.corp.biblio.infrastructure.mongodb.daos.CustomerReactive;
 import es.awkidev.corp.biblio.infrastructure.mongodb.daos.LoanBookReactive;
+import es.awkidev.corp.biblio.infrastructure.mongodb.daos.PenalizationReactive;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.CopyBookEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.CustomerEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.LoanBookEntity;
@@ -17,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -29,13 +31,14 @@ public class LoanCreationValidationMongoDb {
 
     private final CustomerReactive customerReactive;
     private final CopyBookReactive copyBookReactive;
+    private final PenalizationReactive penalizationReactive;
     private final LoanBookReactive loanBookReactive;
 
 
     public Mono<List<LoanBookEntity>> checkLoanValid(LoanBook loanNew){
         AtomicReference<LoanBookEntity> loanBookAtomic = new AtomicReference<>();
 
-        return customerValidation(loanNew.getCustomerNumberMembership())
+        return customerValidation(loanNew.getCustomerNumberMembership(), loanNew.getCopyBooks().size())
                 .doOnNext(customerEntity -> {
                     LoanBookEntity loanBookEntity = LoanBookEntity.builder()
                             .returned(false)
@@ -69,10 +72,10 @@ public class LoanCreationValidationMongoDb {
                 : Collections.emptyList();
     }
 
-    private Mono<CustomerEntity> customerValidation(String customerNumberMembership) {
+    private Mono<CustomerEntity> customerValidation(String customerNumberMembership, int numBooksLoan) {
         return findCustomerRegistered(customerNumberMembership)
-                .flatMap(this::checkNoPendingLoansCustomer)
-                .flatMap(this::checkMaxLoansCustomerEntity);
+                .flatMap(this::checkNoPenalizationCustomer)
+                .flatMap(customer -> checkMaxLoansCustomerEntity(customer, numBooksLoan));
     }
 
     private Mono<CustomerEntity> findCustomerRegistered(String numberMembership){
@@ -82,17 +85,22 @@ public class LoanCreationValidationMongoDb {
                 .switchIfEmpty(Mono.error(new NotFoundException("Customer numberMembership: " + numberMembership)));
     }
 
-    private Mono<CustomerEntity> checkNoPendingLoansCustomer(CustomerEntity customerEntity){
-        log.info("Check customer has no peding loans by membership '{}'", customerEntity.getNumberMembership());
-        return Mono.just(customerEntity);
+    private Mono<CustomerEntity> checkNoPenalizationCustomer(CustomerEntity customerEntity){
+        log.info("Check customer has not penalization by membership '{}'", customerEntity.getNumberMembership());
+
+        return penalizationReactive.findFirstByCustomerEntityAndActiveTrue(customerEntity)
+                .flatMap(penalizationEntity -> Mono.error(
+                        new ConflictException("Customer has at least one penalization. " +
+                                "NumberMembership : " + customerEntity.getNumberMembership())))
+                .thenReturn(customerEntity);
     }
 
-    private Mono<CustomerEntity> checkMaxLoansCustomerEntity(CustomerEntity customerEntity){
+    private Mono<CustomerEntity> checkMaxLoansCustomerEntity(CustomerEntity customerEntity, int numBooksLoan){
         log.info("Check max loans customer by membership '{}'", customerEntity.getNumberMembership());
 
-        return loanBookReactive.countAllByCustomerEntityAndReturnedFalse(customerEntity)
-                .filter(numLoans -> numLoans < LoanBook.MAX_NUM_LOANS)
-                .switchIfEmpty(Mono.error(new ConflictException("Customer has reached loan books limit. " +
+        return loanBookReactive.countAllByCustomerEntityAndReturnedFalseAndEndDateIsGreaterThanEqual(customerEntity, LocalDate.now())
+                .filter(numLoans -> (int) (numLoans + numBooksLoan) <= LoanBook.MAX_NUM_LOANS)
+                .switchIfEmpty(Mono.error(new ConflictException("Customer could have or has reached loan books limit. " +
                         "NumberMembership : " + customerEntity.getNumberMembership())))
                 .map(unused -> customerEntity);
     }
