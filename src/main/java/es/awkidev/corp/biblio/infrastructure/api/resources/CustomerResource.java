@@ -35,7 +35,8 @@ public class CustomerResource {
         log.info("Search customer by numberMembership {}", numberMembership);
         return this.customerService.searchByNumberMembership(numberMembership)
                 .map(customer -> customer.getNumberMembership() +
-                        " - " + customer.getFullName()
+                        " - " + customer.getFullName() +
+                        (customer.isHasPenalization() ? " - (Penalización activa)" : "")
                 )
                 .collectList();
     }

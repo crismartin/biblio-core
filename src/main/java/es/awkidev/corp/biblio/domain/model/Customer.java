@@ -20,6 +20,7 @@ public class Customer {
     private String nick;
     private String identity;
     private String numberMembership;
+    private boolean hasPenalization;
 
     public String getFullName() {
         return Stream.of(name, surname, secondSurname)

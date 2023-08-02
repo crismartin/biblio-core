@@ -8,4 +8,8 @@ import reactor.core.publisher.Mono;
 public interface PenalizationReactive extends ReactiveSortingRepository<PenalizationEntity, String> {
 
     Mono<PenalizationEntity> findFirstByCustomerEntityAndActiveTrue(CustomerEntity customerEntity);
+
+    Mono<PenalizationEntity> findFirstByCustomerEntity_NumberMembershipAndActiveTrue(String numberMembership);
+
+    Mono<Boolean> existsPenalizationEntityByCustomerEntityAndActiveTrue(CustomerEntity customerEntity);
 }
