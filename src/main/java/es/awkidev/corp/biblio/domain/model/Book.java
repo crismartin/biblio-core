@@ -20,8 +20,9 @@ public class Book {
     private LocalDate releaseDate;
     private String summary;
     private int numberOfCopies;
+    private String signature;
 
     private List<Author> authors;
     private PublisherEntity publisher;
-    private List<CategoryEntity> categories;
+    private List<Category> categories;
 }

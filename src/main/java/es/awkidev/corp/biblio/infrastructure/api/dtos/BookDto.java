@@ -20,9 +20,11 @@ public class BookDto {
     private int numberOfCopies;
 
     private List<AuthorDto> authors;
+    private List<CategoryDto> categories;
 
     public BookDto(Book book){
         BeanUtils.copyProperties(book, this);
         this.authors = AuthorDto.toAuthorsDto(book.getAuthors());
+        this.categories = CategoryDto.toCategoriesDto(book.getCategories());
     }
 }
