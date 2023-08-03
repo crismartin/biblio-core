@@ -1,6 +1,5 @@
 package es.awkidev.corp.biblio.domain.model;
 
-import es.awkidev.corp.biblio.infrastructure.mongodb.entities.CategoryEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.PublisherEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

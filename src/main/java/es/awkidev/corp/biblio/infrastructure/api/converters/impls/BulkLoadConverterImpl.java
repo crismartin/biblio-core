@@ -34,7 +34,7 @@ public class BulkLoadConverterImpl implements BulkLoadConverter {
 
         var books = bulkLoadBooks.stream()
                  .filter(bulkLoadBookDto -> isValidBulkLoadBook(bulkLoadBookDto, result))
-                 .map(bulkLoadBookDto -> toBook(bulkLoadBookDto))
+                 .map(this::toBook)
                  .collect(Collectors.toList());
 
         result.setBooks(books);
