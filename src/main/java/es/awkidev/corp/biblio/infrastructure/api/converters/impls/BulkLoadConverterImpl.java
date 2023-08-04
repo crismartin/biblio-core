@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +74,7 @@ public class BulkLoadConverterImpl implements BulkLoadConverter {
 
         return Book.builder()
                 .isbn(bulkLoadBookDto.getIsbn())
-                .title(bulkLoadBookDto.getTitle())
+                .title(bulkLoadBookDto.getTitle().toUpperCase())
                 .signature(bulkLoadBookDto.getSignature())
                 .numberOfCopies(bulkLoadBookDto.getNumberOfCopies())
                 .authors(authors)
@@ -102,7 +104,12 @@ public class BulkLoadConverterImpl implements BulkLoadConverter {
     }
 
     private LocalDate parseReleaseDate(String strDate) {
-        return Stream.of("yyyy", "dd/MM/yyyy")
+        return Stream.of(new DateTimeFormatterBuilder()
+                        .appendPattern("yyyy")
+                        .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
+                        .parseDefaulting(ChronoField.DAY_OF_MONTH, 2)
+                        .toFormatter(),
+                        DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                 .map(formatter -> parseFecha(strDate, formatter))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -110,9 +117,8 @@ public class BulkLoadConverterImpl implements BulkLoadConverter {
                 .orElse(null);
     }
 
-    private Optional<LocalDate> parseFecha(String fecha, String format) {
+    private Optional<LocalDate> parseFecha(String fecha, DateTimeFormatter formatter) {
         try {
-            DateTimeFormatter formatter =  DateTimeFormatter.ofPattern(format);
             return Optional.of(LocalDate.parse(fecha, formatter));
         } catch (Exception e) {
             return Optional.empty();

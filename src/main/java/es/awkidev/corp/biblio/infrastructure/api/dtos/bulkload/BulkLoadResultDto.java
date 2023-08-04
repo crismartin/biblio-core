@@ -18,6 +18,6 @@ public class BulkLoadResultDto {
     }
 
     public void calcFailed(){
-        failed = readed - (converted + saved);
+        failed = errors.size();
     }
 }

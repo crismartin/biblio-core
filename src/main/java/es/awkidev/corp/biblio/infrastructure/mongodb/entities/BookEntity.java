@@ -1,6 +1,5 @@
 package es.awkidev.corp.biblio.infrastructure.mongodb.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import es.awkidev.corp.biblio.domain.model.Book;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +27,6 @@ public class BookEntity {
     @Indexed(unique = true)
     private String isbn;
     private String title;
-    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate releaseDate;
     private String summary;
 
@@ -44,5 +42,9 @@ public class BookEntity {
         BeanUtils.copyProperties(this, book);
         book.setAuthors(AuthorEntity.toAuthors(authors));
         return book;
+    }
+
+    public BookEntity(Book book){
+        BeanUtils.copyProperties(book, this);
     }
 }
