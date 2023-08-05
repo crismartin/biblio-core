@@ -14,7 +14,6 @@ import java.util.Optional;
 @Builder
 public class CopyBook {
 
-    private String signature;
     private String reference;
     private boolean available;
     private String section;

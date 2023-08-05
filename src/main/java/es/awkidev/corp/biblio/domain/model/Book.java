@@ -1,6 +1,5 @@
 package es.awkidev.corp.biblio.domain.model;
 
-import es.awkidev.corp.biblio.infrastructure.mongodb.entities.CategoryEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.PublisherEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,8 +19,9 @@ public class Book {
     private LocalDate releaseDate;
     private String summary;
     private int numberOfCopies;
+    private String signature;
 
     private List<Author> authors;
     private PublisherEntity publisher;
-    private List<CategoryEntity> categories;
+    private List<Category> categories;
 }

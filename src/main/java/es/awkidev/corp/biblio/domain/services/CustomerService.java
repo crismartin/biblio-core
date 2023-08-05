@@ -6,4 +6,5 @@ import reactor.core.publisher.Flux;
 
 @Service
 public interface CustomerService {
-    Flux<Customer> searchByNumberMembership(String numberMembership);}
+    Flux<Customer> searchByNumberMembership(String numberMembership);
+}
