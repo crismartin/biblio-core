@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDto {
-    private String id;
     private String name;
 
     public CategoryDto(Category category){

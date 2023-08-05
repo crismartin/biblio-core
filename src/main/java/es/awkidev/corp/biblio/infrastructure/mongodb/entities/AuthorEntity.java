@@ -25,6 +25,8 @@ public class AuthorEntity {
     @Id
     @Indexed(unique = true)
     private String id;
+    @Indexed(unique = true)
+    private String reference;
     private String fullName;
 
     public AuthorEntity(Author author){

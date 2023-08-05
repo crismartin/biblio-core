@@ -21,6 +21,7 @@ import java.time.temporal.ChronoField;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -88,6 +89,7 @@ public class BulkLoadConverterImpl implements BulkLoadConverter {
         return Stream.of(authors.split(","))
                 .map(authorName -> authorName.trim().toUpperCase())
                 .map(authorName -> Author.builder()
+                        .reference(UUID.randomUUID().toString())
                         .fullName(authorName)
                         .build())
                 .collect(Collectors.toList());

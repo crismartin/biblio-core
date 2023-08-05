@@ -1,12 +1,12 @@
 package es.awkidev.corp.biblio.infrastructure.api.resources;
 
 import es.awkidev.corp.biblio.domain.services.BookService;
+import es.awkidev.corp.biblio.infrastructure.api.dtos.SearchBookDto;
+import es.awkidev.corp.biblio.infrastructure.api.dtos.SearchBookFilterDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -21,6 +21,8 @@ import static es.awkidev.corp.biblio.infrastructure.api.resources.BookResource.B
 public class BookResource {
     static final String BOOKS = "/library/books";
     static final String ISBN = "/{isbn}";
+
+    static final String SEARCH = "/search";
 
     private BookService bookService;
 
@@ -37,4 +39,16 @@ public class BookResource {
                         ? List.of(book.getIsbn() + " - " + book.getTitle())
                         : List.of("Libro no disponible"));
     }
+
+    @PostMapping(SEARCH)
+    public Flux<SearchBookDto> searchBooksByFilter(@RequestBody SearchBookFilterDto filter){
+        log.info("Search books by filter criteria -> author: '{}', keyword: '{}'",
+                filter.getAuthorReference(), filter.getKeyword());
+
+        return bookService.searchBooksByFilter(filter.toSearchBookFilter())
+                .map(SearchBookDto::new)
+                .doOnNext(searchBookDto -> log.info("  |_ Libro encontrado: {}", searchBookDto.getIsbn()))
+                .doOnComplete(() -> log.info("Search book by filter criteria finished\n"));
+    }
+
 }

@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class AuthorDto {
 
-    private String id;
     private String fullName;
 
     public AuthorDto(Author author) {

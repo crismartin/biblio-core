@@ -27,10 +27,11 @@ public class BookEntity {
     @Indexed(unique = true)
     private String isbn;
     private String title;
+    private String edition;
     private LocalDate releaseDate;
     private String summary;
 
-    @DBRef
+    @DBRef(lazy = true)
     private List<AuthorEntity> authors;
     @DBRef(lazy = true)
     private PublisherEntity publisher;
@@ -41,6 +42,7 @@ public class BookEntity {
         Book book = new Book();
         BeanUtils.copyProperties(this, book);
         book.setAuthors(AuthorEntity.toAuthors(authors));
+        book.setCategories(CategoryEntity.toCategories(categories));
         return book;
     }
 

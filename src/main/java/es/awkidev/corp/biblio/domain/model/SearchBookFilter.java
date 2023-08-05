@@ -5,12 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Builder
-public class Author {
-    private String id;
-    private String reference;
-    private String fullName;
+public class SearchBookFilter {
+    private String title;
+    private String authorReference;
+    private String keyword;
 }

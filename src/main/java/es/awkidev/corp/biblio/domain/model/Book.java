@@ -16,6 +16,7 @@ import java.util.List;
 public class Book {
     private String isbn;
     private String title;
+    private String edition;
     private LocalDate releaseDate;
     private String summary;
     private int numberOfCopies;

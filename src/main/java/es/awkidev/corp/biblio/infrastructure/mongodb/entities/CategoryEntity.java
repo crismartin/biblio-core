@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +27,20 @@ public class CategoryEntity {
 
     public CategoryEntity(Category category){
         BeanUtils.copyProperties(category, this);
+    }
+
+    public Category toCategory(){
+        Category category = new Category();
+        BeanUtils.copyProperties(this, category);
+        return category;
+    }
+
+    public static List<Category> toCategories(List<CategoryEntity> categoryEntities) {
+        return CollectionUtils.isEmpty(categoryEntities)
+                ? Collections.emptyList()
+                : categoryEntities.stream()
+                .map(CategoryEntity::toCategory)
+                .collect(Collectors.toList());
     }
 
 }

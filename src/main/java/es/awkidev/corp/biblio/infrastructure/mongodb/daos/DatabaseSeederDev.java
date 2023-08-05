@@ -67,8 +67,8 @@ public class DatabaseSeederDev {
         LogManager.getLogger(this.getClass()).warn("        ------- Authors");
 
         AuthorEntity[] authors = {
-                AuthorEntity.builder().fullName("Ángel Largo García").build(),
-                AuthorEntity.builder().fullName("Amador Rivas").build()
+                AuthorEntity.builder().reference("authorRef-1").fullName("Ángel Largo García").build(),
+                AuthorEntity.builder().reference("authorRef-2").fullName("Amador Rivas").build()
         };
         authorDao.saveAll(List.of(authors));
 
@@ -102,19 +102,22 @@ public class DatabaseSeederDev {
 
         LogManager.getLogger(this.getClass()).warn("        ------- Books");
         BookEntity[] books = {
-                BookEntity.builder().isbn("9788497443869").title("Desdramatizar en la vida y en el trabajo")
+                BookEntity.builder().isbn("9788497443869").title("Desdramatizar en la vida y en el trabajo".toUpperCase())
+                        .edition("Edicion I")
                         .releaseDate(LocalDate.now())
                         .summary("Lo que nadie te ha contado sobre como dejar de sufrir y vivir apasionado").authors(List.of(authors))
                         .categories(List.of(categories)).publisher(publishers[0])
                         .build(),
-                BookEntity.builder().isbn("9788457089895").title("LIBRO DE PRUEBA 2")
+                BookEntity.builder().isbn("9788457089895").title("LIBRO DE PRUEBA 2".toUpperCase())
+                        .edition("Edicion II")
                         .releaseDate(LocalDate.now())
                         .summary("Ejemplo de resumen del libro 2").authors(List.of(authors))
                         .categories(List.of(categories)).publisher(publishers[0])
                         .build(),
-                BookEntity.builder().isbn("9788457089870").title("LIBRO DE PRUEBA 3")
+                BookEntity.builder().isbn("9788457089870").title("LIBRO DE PRUEBA 3".toUpperCase())
+                        .edition("Edicion III")
                         .releaseDate(LocalDate.now())
-                        .summary("Ejemplo de resumen del libro 3").authors(List.of(authors))
+                        .summary("Ejemplo de resumen del libro 3").authors(List.of(authors[0]))
                         .categories(List.of(categories)).publisher(publishers[0])
                         .build()
         };
