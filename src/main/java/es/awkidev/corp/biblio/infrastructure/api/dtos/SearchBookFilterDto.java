@@ -12,7 +12,7 @@ public class SearchBookFilterDto {
     public SearchBookFilter toSearchBookFilter(){
         return SearchBookFilter.builder()
                 .keyword(StringUtils.defaultString(this.keyword, StringUtils.EMPTY).toUpperCase())
-                .authorReference(StringUtils.defaultString(this.authorReference, StringUtils.EMPTY))
+                .authorFullName(StringUtils.defaultString(this.authorReference, StringUtils.EMPTY))
                 .build();
     }
 }

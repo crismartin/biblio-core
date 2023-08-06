@@ -1,9 +1,10 @@
 package es.awkidev.corp.biblio.infrastructure.api.resources;
 
+import es.awkidev.corp.biblio.domain.model.SearchBookFilter;
 import es.awkidev.corp.biblio.domain.services.BookService;
-import es.awkidev.corp.biblio.infrastructure.api.dtos.SearchBookDto;
-import es.awkidev.corp.biblio.infrastructure.api.dtos.SearchBookFilterDto;
+import es.awkidev.corp.biblio.infrastructure.api.dtos.BookItemDto;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -40,13 +41,20 @@ public class BookResource {
                         : List.of("Libro no disponible"));
     }
 
-    @PostMapping(SEARCH)
-    public Flux<SearchBookDto> searchBooksByFilter(@RequestBody SearchBookFilterDto filter){
+    @GetMapping(SEARCH)
+    public Flux<BookItemDto> searchBooksByFilter(
+            @RequestParam(required = false) String authorFullName,
+            @RequestParam(required = false) String keyword){
         log.info("Search books by filter criteria -> author: '{}', keyword: '{}'",
-                filter.getAuthorReference(), filter.getKeyword());
+                authorFullName, keyword);
 
-        return bookService.searchBooksByFilter(filter.toSearchBookFilter())
-                .map(SearchBookDto::new)
+        SearchBookFilter searchBookFilter = SearchBookFilter.builder()
+                .keyword(StringUtils.defaultString(keyword, StringUtils.EMPTY).trim().toUpperCase())
+                .authorFullName(StringUtils.defaultString(authorFullName, StringUtils.EMPTY).trim())
+                .build();
+
+        return bookService.searchBooksByFilter(searchBookFilter)
+                .map(BookItemDto::new)
                 .doOnNext(searchBookDto -> log.info("  |_ Libro encontrado: {}", searchBookDto.getIsbn()))
                 .doOnComplete(() -> log.info("Search book by filter criteria finished\n"));
     }

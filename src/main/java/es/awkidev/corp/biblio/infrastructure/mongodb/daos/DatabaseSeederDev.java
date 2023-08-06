@@ -67,8 +67,8 @@ public class DatabaseSeederDev {
         LogManager.getLogger(this.getClass()).warn("        ------- Authors");
 
         AuthorEntity[] authors = {
-                AuthorEntity.builder().reference("authorRef-1").fullName("Ángel Largo García").build(),
-                AuthorEntity.builder().reference("authorRef-2").fullName("Amador Rivas").build()
+                AuthorEntity.builder().reference("authorRef-1").fullName("ÁNGEL LARGO GARCÍA").build(),
+                AuthorEntity.builder().reference("authorRef-2").fullName("AMADOR RIVAS").build()
         };
         authorDao.saveAll(List.of(authors));
 

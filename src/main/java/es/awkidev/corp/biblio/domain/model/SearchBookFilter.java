@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SearchBookFilter {
     private String title;
-    private String authorReference;
+    private String authorFullName;
     private String keyword;
 }
