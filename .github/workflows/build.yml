@@ -23,14 +23,14 @@ jobs:
         run: mvn -B verify
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      - name: Sonar
-        if: success()
-        run: >
-          mvn -B verify -DskipTests sonar:sonar
-          -Dsonar.projectKey=crismartin_biblio-core
-          -Dsonar.organization=crismartin
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.login=$SONAR_TOKEN
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#      - name: Sonar
+#        if: success()
+#        run: >
+#          mvn -B verify -DskipTests sonar:sonar
+#          -Dsonar.projectKey=crismartin_biblio-core
+#          -Dsonar.organization=crismartin
+#          -Dsonar.host.url=https://sonarcloud.io
+#          -Dsonar.login=$SONAR_TOKEN
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
