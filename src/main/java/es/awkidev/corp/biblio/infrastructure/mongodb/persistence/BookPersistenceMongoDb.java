@@ -33,15 +33,15 @@ public class BookPersistenceMongoDb implements BookPersistence {
     @Override
     public Flux<Book> searchBooksByFilter(SearchBookFilter filter) {
 
-        Mono<AuthorEntity> monoAuthorEntity = Mono.just(filter.getAuthorFullName())
+        Mono<AuthorEntity> monoAuthorEntity = Mono.just(StringUtils.defaultIfBlank(filter.getAuthorFullName(), StringUtils.EMPTY).toUpperCase())
                 .filter(StringUtils::isNotBlank)
                 .flatMap(authorReactive::findFirstByFullName)
                 .switchIfEmpty(Mono.just(new AuthorEntity()));
 
         return monoAuthorEntity
                 .flatMapMany(authorEntity -> StringUtils.isNoneBlank(authorEntity.getId())
-                        ? bookReactive.findAllByTitleContainsAndAuthorsIn(filter.getKeyword(), List.of(authorEntity))
-                        : bookReactive.findAllByTitleContains(filter.getKeyword()))
+                        ? bookReactive.findAllByTitleContainsAndAuthorsIn(filter.getKeyword().toUpperCase(), List.of(authorEntity))
+                        : bookReactive.findAllByTitleContains(filter.getKeyword().toUpperCase()))
                 .map(BookEntity::toBook);
     }
 

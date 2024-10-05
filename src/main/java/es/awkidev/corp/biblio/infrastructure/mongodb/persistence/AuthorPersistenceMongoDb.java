@@ -6,6 +6,7 @@ import es.awkidev.corp.biblio.infrastructure.mongodb.daos.AuthorReactive;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.AuthorEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
@@ -18,7 +19,7 @@ public class AuthorPersistenceMongoDb implements AuthorPersistence {
 
     @Override
     public Flux<Author> searchByFullName(String fullName) {
-        return authorReactive.findAllByFullNameContains(fullName)
+        return authorReactive.findAllByFullNameContains(StringUtils.defaultString(fullName, "").toUpperCase())
                 .map(AuthorEntity::toAuthor);
     }
 }

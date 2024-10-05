@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static es.awkidev.corp.biblio.infrastructure.api.resources.BookResource.BOOKS;
-import static es.awkidev.corp.biblio.infrastructure.api.resources.BookResource.ISBN;
+import static es.awkidev.corp.biblio.infrastructure.api.resources.BookResource.*;
 
 @RestTestConfig
 class BookResourceIT {
@@ -21,6 +20,20 @@ class BookResourceIT {
         this.restClientTestService.loginAdmin(webTestClient)
                 .get()
                 .uri(BOOKS + ISBN, "9788425223280")
+                .exchange()
+                .expectStatus()
+                .isOk();
+    }
+
+    @Test
+    void testSearchBooksByFilter(){
+        this.restClientTestService.loginAdmin(webTestClient)
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(BOOKS + SEARCH)
+                        .queryParam("authorFullName", "AMADOR RIVAS")
+                        .queryParam("keyword", "libro")
+                        .build())
                 .exchange()
                 .expectStatus()
                 .isOk();
