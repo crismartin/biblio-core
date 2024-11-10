@@ -59,4 +59,6 @@ public class BookResource {
                 .doOnComplete(() -> log.info("Search book by filter criteria finished\n"));
     }
 
+
+
 }

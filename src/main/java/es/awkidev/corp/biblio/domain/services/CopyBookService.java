@@ -8,4 +8,5 @@ import reactor.core.publisher.Mono;
 public interface CopyBookService {
     Mono<CopyBook> searchByBookIsbnAvailable(String isbn);
     Mono<CopyBook> getByReference(String reference);
+    Mono<CopyBook> getCopybookFromIsbn(String isbn);
 }

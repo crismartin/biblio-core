@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,6 +15,7 @@ public class CopyBookDto {
     private String signature;
     private String reference;
     private boolean available;
+    private LocalDate availabilityDate;
     private String section;
     private String location;
 

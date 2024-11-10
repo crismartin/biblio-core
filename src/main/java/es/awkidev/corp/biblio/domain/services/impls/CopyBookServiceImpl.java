@@ -26,4 +26,9 @@ public class CopyBookServiceImpl implements CopyBookService {
     public Mono<CopyBook> getByReference(String reference) {
         return copyBookPersistence.getByReference(reference);
     }
+
+    @Override
+    public Mono<CopyBook> getCopybookFromIsbn(String isbn){
+        return copyBookPersistence.getCopybookFromIsbn(isbn);
+    }
 }
