@@ -1,5 +1,6 @@
 package es.awkidev.corp.biblio.infrastructure.mongodb.daos;
 
+import es.awkidev.corp.biblio.infrastructure.mongodb.entities.CopyBookEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.CustomerEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.LoanBookEntity;
 import org.springframework.data.repository.reactive.ReactiveSortingRepository;
@@ -15,4 +16,6 @@ public interface LoanBookReactive extends ReactiveSortingRepository<LoanBookEnti
     Mono<Long> countAllByCustomerEntityAndReturnedFalseAndEndDateIsGreaterThanEqual(CustomerEntity customerEntity, LocalDate currentDay);
 
     Mono<LoanBookEntity> findFirstByReference(String reference);
+
+    Mono<LoanBookEntity> findByCopyBookEntity(CopyBookEntity copyBookEntity);
 }

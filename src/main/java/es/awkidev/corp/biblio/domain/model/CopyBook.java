@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Data
@@ -16,6 +17,7 @@ public class CopyBook {
 
     private String reference;
     private boolean available;
+    private LocalDate availabilityDate;
     private String section;
     private String location;
 

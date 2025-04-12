@@ -6,21 +6,29 @@ import es.awkidev.corp.biblio.domain.model.CopyBook;
 import es.awkidev.corp.biblio.domain.persistence.CopyBookPersistence;
 import es.awkidev.corp.biblio.infrastructure.mongodb.daos.BookReactive;
 import es.awkidev.corp.biblio.infrastructure.mongodb.daos.CopyBookReactive;
+import es.awkidev.corp.biblio.infrastructure.mongodb.daos.LoanBookReactive;
+import es.awkidev.corp.biblio.infrastructure.mongodb.entities.BookEntity;
 import es.awkidev.corp.biblio.infrastructure.mongodb.entities.CopyBookEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
+@Slf4j
 @Repository
 public class CopyBookPersistenceMongoDb implements CopyBookPersistence {
 
     private BookReactive bookReactive;
     private CopyBookReactive copyBookReactive;
+    private LoanBookReactive loanBookReactive;
 
     @Autowired
-    public CopyBookPersistenceMongoDb(CopyBookReactive copyBookReactive, BookReactive bookReactive){
+    public CopyBookPersistenceMongoDb(CopyBookReactive copyBookReactive, BookReactive bookReactive, LoanBookReactive loanBookReactive){
         this.copyBookReactive = copyBookReactive;
         this.bookReactive = bookReactive;
+        this.loanBookReactive = loanBookReactive;
     }
 
     @Override

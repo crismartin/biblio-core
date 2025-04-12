@@ -2,6 +2,7 @@ package es.awkidev.corp.biblio.infrastructure.api.resources;
 
 import es.awkidev.corp.biblio.domain.model.SearchBookFilter;
 import es.awkidev.corp.biblio.domain.services.BookService;
+import es.awkidev.corp.biblio.infrastructure.api.dtos.BookDto;
 import es.awkidev.corp.biblio.infrastructure.api.dtos.BookItemDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,15 +33,6 @@ public class BookResource {
         this.bookService = bookService;
     }
 
-    @GetMapping(ISBN)
-    public Mono<List<String>> searchByIsbnAvailable(@PathVariable String isbn) {
-        log.info("Search book by isbn {}", isbn);
-        return bookService.searchByIsbn(isbn)
-                .map(book -> book.getNumberOfCopies() > 0
-                        ? List.of(book.getIsbn() + " - " + book.getTitle())
-                        : List.of("Libro no disponible"));
-    }
-
     @GetMapping(SEARCH)
     public Flux<BookItemDto> searchBooksByFilter(
             @RequestParam(required = false) String authorFullName,
@@ -59,4 +51,10 @@ public class BookResource {
                 .doOnComplete(() -> log.info("Search book by filter criteria finished\n"));
     }
 
+    @GetMapping(ISBN)
+    public Mono<BookDto> getBookDetails(@PathVariable String isbn) {
+        log.info("Search book by isbn {}", isbn);
+        return bookService.getBookByIsbn(isbn)
+                .map(BookDto::new);
+    }
 }

@@ -9,4 +9,5 @@ public interface CopyBookPersistence {
     Mono<CopyBook> searchByBookIsbnAvailable(String isbn);
 
     Mono<CopyBook> getByReference(String reference);
+
 }
