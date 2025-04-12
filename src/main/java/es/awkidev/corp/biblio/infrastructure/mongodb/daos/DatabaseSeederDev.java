@@ -105,13 +105,15 @@ public class DatabaseSeederDev {
                 BookEntity.builder().isbn("9788497443869").title("Desdramatizar en la vida y en el trabajo".toUpperCase())
                         .edition("Edicion I")
                         .releaseDate(LocalDate.now())
-                        .summary("Lo que nadie te ha contado sobre como dejar de sufrir y vivir apasionado").authors(List.of(authors))
+                        .summary("Lo que nadie te ha contado sobre como dejar de sufrir y vivir apasionado")
+                        .authors(List.of(authors))
                         .categories(List.of(categories)).publisher(publishers[0])
                         .build(),
                 BookEntity.builder().isbn("9788457089895").title("LIBRO DE PRUEBA 2".toUpperCase())
                         .edition("Edicion II")
                         .releaseDate(LocalDate.now())
-                        .summary("Ejemplo de resumen del libro 2").authors(List.of(authors))
+                        .summary("Ejemplo de resumen del libro 2")
+                        .authors(List.of(authors))
                         .categories(List.of(categories)).publisher(publishers[0])
                         .build(),
                 BookEntity.builder().isbn("9788457089870").title("LIBRO DE PRUEBA 3".toUpperCase())
@@ -155,6 +157,10 @@ public class DatabaseSeederDev {
                 CopyBookEntity.builder()
                         .id("8").reference("ref-8").available(false).location("DEPOSITO")
                         .bookEntity(books[1])
+                        .build(),
+                CopyBookEntity.builder()
+                        .id("9").reference("ref-9").available(false).location("DEPOSITO")
+                        .bookEntity(books[2])
                         .build()
         };
         copyBookDao.saveAll(List.of(copyBooks));
@@ -183,6 +189,13 @@ public class DatabaseSeederDev {
                         .customerEntity(customers[3])
                         .startDate(dateNow.plusMonths(-1))
                         .endDate(dateNow.plusDays(-1))
+                        .build(),
+                LoanBookEntity.builder()
+                        .reference("loanRef-3")
+                        .copyBookEntity(copyBooks[8])
+                        .customerEntity(customers[3])
+                        .startDate(dateNow)
+                        .endDate(endDate)
                         .build()
         };
         loanBookDao.saveAll(List.of(loans));

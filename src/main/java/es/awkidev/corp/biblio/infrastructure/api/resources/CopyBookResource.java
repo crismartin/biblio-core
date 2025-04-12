@@ -53,11 +53,4 @@ public class CopyBookResource {
                 .map(CopyBookDto::new);
     }
 
-    @GetMapping(BOOK_ISBN + "/detail")
-    public Mono<CopyBookDto> getCopybookFromIsbn(@PathVariable String isbn){
-        log.info("Search copy of book by isbn {}", isbn);
-        return copyBookService.getCopybookFromIsbn(isbn)
-                .map(CopyBookDto::new);
-    }
-
 }

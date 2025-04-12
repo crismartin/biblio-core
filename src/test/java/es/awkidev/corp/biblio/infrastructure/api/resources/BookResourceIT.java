@@ -19,7 +19,7 @@ class BookResourceIT {
     void testSearchByReferenceOk(){
         this.restClientTestService.loginAdmin(webTestClient)
                 .get()
-                .uri(BOOKS + ISBN, "9788425223280")
+                .uri(BOOKS + ISBN, "9788497443869")
                 .exchange()
                 .expectStatus()
                 .isOk();

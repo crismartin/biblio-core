@@ -28,4 +28,9 @@ public class BookServiceImpl implements BookService {
     public Flux<Book> searchBooksByFilter(SearchBookFilter filter) {
         return bookPersistence.searchBooksByFilter(filter);
     }
+
+    @Override
+    public Mono<Book> getBookByIsbn(String isbn) {
+        return bookPersistence.getBookByIsbn(isbn);
+    }
 }

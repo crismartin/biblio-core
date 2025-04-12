@@ -46,58 +46,6 @@ public class CopyBookPersistenceMongoDb implements CopyBookPersistence {
     }
 
     @Override
-    public Mono<CopyBook> getCopybookFromIsbn(String isbn){
-        return bookReactive.findBookEntityByIsbn(isbn)
-                .switchIfEmpty(Mono.error(new NotFoundException("Book isbn: " + isbn)))
-                .flatMap(bookEntity ->
-                        Mono.zip(
-                                getAvailableOrNextAvailabilityFromBookEntity(bookEntity),
-                                getNumberOfCopiesAvailablesFromBookEntity(bookEntity))
-                        .map(tuple -> {
-                            tuple.getT1().getBook().setNumberOfCopies(tuple.getT2());
-                            return tuple.getT1();
-                        })
-                );
-    }
-
-    public Mono<Integer> getNumberOfCopiesAvailablesFromBookEntity(BookEntity bookEntity){
-        return copyBookReactive.findAllByBookEntityAndAvailableTrue(bookEntity)
-                .count()
-                .map(numberCopies -> Integer.valueOf(numberCopies.toString()));
-    }
-
-    public Mono<CopyBook> getAvailableOrNextAvailabilityFromBookEntity(BookEntity bookEntity){
-        return copyBookReactive.findFirstByBookEntityAndAvailableTrue(bookEntity)
-                .flatMap(copyBookEntityAvailable -> {
-                    Mono<CopyBook> result;
-                    if (copyBookEntityAvailable != null) {
-                        log.info("Has a copybook available from book {}", bookEntity.getIsbn());
-                        var copyBook = copyBookEntityAvailable.toCopyBook();
-                        copyBook.setBook(bookEntity.toBook());
-                        result = Mono.just(copyBook);
-                    } else {
-                        log.info("Havent an available copybooks from book {}", bookEntity.getIsbn());
-                        result = copyBookReactive.findAllByBookEntityAndAvailableFalse(bookEntity)
-                                .flatMap(copyBookEntity -> loanBookReactive.findByCopyBookEntity(copyBookEntity)
-                                        .map(loanBookEntity -> {
-                                            copyBookEntityAvailable.setBookEntity(bookEntity);
-                                            var copyBook = loanBookEntity.getCopyBookEntity().toCopyBook();
-                                            copyBook.setBook(bookEntity.toBook());
-                                            copyBook.setAvailabilityDate(loanBookEntity.getEndDate());
-                                            return copyBook;
-                                        })
-                                )
-                                .reduce((copyBookA, copyBookB) ->
-                                        copyBookA.getAvailabilityDate().isBefore(copyBookB.getAvailabilityDate())
-                                                ? copyBookA
-                                                : copyBookB
-                                );
-                    }
-                    return result;
-                });
-    }
-
-    @Override
     public Mono<CopyBook> getByReference(String reference) {
         return copyBookReactive.findByReferenceAndAvailableTrue(reference)
                 .flatMap(copyBookEntity -> bookReactive.findById(copyBookEntity.getBookEntity().getId())

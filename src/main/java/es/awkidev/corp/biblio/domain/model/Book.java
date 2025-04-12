@@ -21,6 +21,7 @@ public class Book {
     private String summary;
     private int numberOfCopies;
     private String signature;
+    private LocalDate nearAvailabilityDate;
 
     private List<Author> authors;
     private PublisherEntity publisher;

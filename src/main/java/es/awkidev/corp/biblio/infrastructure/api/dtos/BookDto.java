@@ -20,6 +20,8 @@ public class BookDto {
     private LocalDate releaseDate;
     private String summary;
     private int numberOfCopies;
+    @JsonFormat(pattern="dd/MM/yyyy")
+    private LocalDate nearAvailabilityDate;
 
     private List<AuthorDto> authors;
     private List<CategoryDto> categories;

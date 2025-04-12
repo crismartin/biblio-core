@@ -7,7 +7,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface CopyBookReactive extends ReactiveSortingRepository<CopyBookEntity, String> {
-    Mono<CopyBookEntity> findByReference(String reference);
 
     Mono<CopyBookEntity> findByReferenceAndAvailableTrue(String reference);
 

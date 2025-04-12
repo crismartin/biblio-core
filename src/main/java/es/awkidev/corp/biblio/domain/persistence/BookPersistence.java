@@ -11,4 +11,6 @@ public interface BookPersistence {
     Mono<Book> searchByIsbn(String isbn);
 
     Flux<Book> searchBooksByFilter(SearchBookFilter filter);
+
+    Mono<Book> getBookByIsbn(String isbn);
 }
